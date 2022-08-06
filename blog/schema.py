@@ -19,6 +19,7 @@ class BlogUpdate(BaseModel):
 
 
 class BlogList(BaseModel):
+    id: int
     title: str
     content: str
     owner_id: int

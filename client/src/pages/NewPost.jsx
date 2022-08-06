@@ -24,6 +24,7 @@ const NewPost = () => {
     }
 
     if (isSuccess) {
+      toast.success("Added new post");
       dispatch(reset());
       navigate("/posts");
     }
@@ -42,14 +43,13 @@ const NewPost = () => {
 
   return (
     <>
-      <BackButton url="/" />
-      <section className="heading">
-        <h1>Create New Post</h1>
-      </section>
+      <div className="section-heading">
+        <BackButton url="/" />
+        <h2>Create New Post</h2>
+      </div>
 
       <section className="form">
         <form onSubmit={onSubmit}>
-        <label htmlFor="content">Title</label>
           <div className="form-group">
             <input
               type="text"

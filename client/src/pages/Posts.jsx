@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { getPosts, reset } from '../features/blog/blogSlice'
 import Spinner from '../components/Spinner'
 import BackButton from '../components/BackButton'
-import TicketItem from '../components/TicketItem'
+import PostItem from '../components/PostItem'
 
 const Posts = () => {
   const { posts, isLoading, isSuccess } = useSelector(
@@ -11,8 +11,7 @@ const Posts = () => {
   )
 
   const dispatch = useDispatch()
-  
-  console.log(posts, isLoading, isSuccess)
+
   useEffect(() => {
     return () => {
       if (isSuccess) {
@@ -31,17 +30,17 @@ const Posts = () => {
 
   return (
     <>
-      <BackButton url='/' />
-      <h1>Tickets</h1>
+      <div className="section-heading">
+        <BackButton url='/' />
+        <h1>Posts</h1>
+      </div>
       <div className='posts'>
         <div className='post-headings'>
-          <div>Date</div>
-          <div>Product</div>
-          <div>Status</div>
-          <div></div>
+          <div>Title</div>
+          <div>Content</div>
         </div>
         {posts.map((post) => (
-          <TicketItem key={post.id} post={post} />
+          <PostItem key={post.id} post={post} />
         ))}
       </div>
     </>

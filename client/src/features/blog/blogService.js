@@ -24,7 +24,6 @@ const getPosts = async (token) => {
   }
 
   const response = await axios.get(API_URL, config)
-  console.log('Response is ', response)
   return response.data
 }
 
