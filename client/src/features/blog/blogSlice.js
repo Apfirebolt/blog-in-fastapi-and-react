@@ -1,21 +1,22 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import noteService from './noteService'
+import blogService from './blogService'
 
 const initialState = {
-  notes: [],
+  posts: [],
+  post: {},
   isError: false,
   isSuccess: false,
   isLoading: false,
   message: '',
 }
 
-// Get ticket notes
-export const getNotes = createAsyncThunk(
-  'notes/getAll',
-  async (ticketId, thunkAPI) => {
+// Create new blog
+export const createPost = createAsyncThunk(
+  'blog/',
+  async (postData, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token
-      return await noteService.getNotes(ticketId, token)
+      return await blogService.createPost(postData, token)
     } catch (error) {
       const message =
         (error.response &&
@@ -29,13 +30,13 @@ export const getNotes = createAsyncThunk(
   }
 )
 
-// Create ticket note
-export const createNote = createAsyncThunk(
-  'notes/create',
-  async ({ noteText, ticketId }, thunkAPI) => {
+// Get user posts
+export const getPosts = createAsyncThunk(
+  'blog/getAll',
+  async (_, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token
-      return await noteService.createNote(noteText, ticketId, token)
+      return await blogService.getPosts(token)
     } catch (error) {
       const message =
         (error.response &&
@@ -49,36 +50,35 @@ export const createNote = createAsyncThunk(
   }
 )
 
-export const noteSlice = createSlice({
-  name: 'note',
+export const postSlice = createSlice({
+  name: 'post',
   initialState,
   reducers: {
     reset: (state) => initialState,
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getNotes.pending, (state) => {
+      .addCase(createPost.pending, (state) => {
         state.isLoading = true
       })
-      .addCase(getNotes.fulfilled, (state, action) => {
-        state.isLoading = true
+      .addCase(createPost.fulfilled, (state) => {
+        state.isLoading = false
         state.isSuccess = true
-        state.notes = action.payload
       })
-      .addCase(getNotes.rejected, (state, action) => {
+      .addCase(createPost.rejected, (state, action) => {
         state.isLoading = false
         state.isError = true
         state.message = action.payload
       })
-      .addCase(createNote.pending, (state) => {
+      .addCase(getPosts.pending, (state) => {
         state.isLoading = true
       })
-      .addCase(createNote.fulfilled, (state, action) => {
+      .addCase(getPosts.fulfilled, (state, action) => {
         state.isLoading = false
         state.isSuccess = true
-        state.notes.push(action.payload)
+        state.posts = action.payload
       })
-      .addCase(createNote.rejected, (state, action) => {
+      .addCase(getPosts.rejected, (state, action) => {
         state.isLoading = false
         state.isError = true
         state.message = action.payload
@@ -86,5 +86,5 @@ export const noteSlice = createSlice({
   },
 })
 
-export const { reset } = noteSlice.actions
-export default noteSlice.reducer
+export const { reset } = postSlice.actions
+export default postSlice.reducer

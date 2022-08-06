@@ -1,18 +1,18 @@
 import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { getTickets, reset } from '../features/tickets/ticketSlice'
+import { getPosts, reset } from '../features/blog/blogSlice'
 import Spinner from '../components/Spinner'
 import BackButton from '../components/BackButton'
 import TicketItem from '../components/TicketItem'
 
-function Tickets() {
-  const { tickets, isLoading, isSuccess } = useSelector(
-    (state) => state.tickets
+const Posts = () => {
+  const { posts, isLoading, isSuccess } = useSelector(
+    (state) => state.blog
   )
 
   const dispatch = useDispatch()
   
-  console.log(tickets, isLoading, isSuccess)
+  console.log(posts, isLoading, isSuccess)
   useEffect(() => {
     return () => {
       if (isSuccess) {
@@ -22,7 +22,7 @@ function Tickets() {
   }, [dispatch, isSuccess])
 
   useEffect(() => {
-    dispatch(getTickets())
+    dispatch(getPosts())
   }, [dispatch])
 
   if (isLoading) {
@@ -33,19 +33,19 @@ function Tickets() {
     <>
       <BackButton url='/' />
       <h1>Tickets</h1>
-      <div className='tickets'>
-        <div className='ticket-headings'>
+      <div className='posts'>
+        <div className='post-headings'>
           <div>Date</div>
           <div>Product</div>
           <div>Status</div>
           <div></div>
         </div>
-        {tickets.map((ticket) => (
-          <TicketItem key={ticket._id} ticket={ticket} />
+        {posts.map((post) => (
+          <TicketItem key={post.id} post={post} />
         ))}
       </div>
     </>
   )
 }
 
-export default Tickets
+export default Posts
