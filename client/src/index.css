@@ -359,3 +359,13 @@ footer {
     font-size: 1.5rem;
   }
 }
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.action-buttons button {
+  margin: auto 0.5rem;
+}

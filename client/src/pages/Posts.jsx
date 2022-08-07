@@ -1,50 +1,68 @@
-import { useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { getPosts, reset } from '../features/blog/blogSlice'
-import Spinner from '../components/Spinner'
-import BackButton from '../components/BackButton'
-import PostItem from '../components/PostItem'
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import { getPosts, deletePost, reset } from "../features/blog/blogSlice";
+import Spinner from "../components/Spinner";
+import BackButton from "../components/BackButton";
+import PostItem from "../components/PostItem";
 
 const Posts = () => {
-  const { posts, isLoading, isSuccess } = useSelector(
+  const { posts, isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.blog
-  )
+  );
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   useEffect(() => {
     return () => {
       if (isSuccess) {
-        dispatch(reset())
+        dispatch(reset());
       }
-    }
-  }, [dispatch, isSuccess])
+    };
+  }, [dispatch, isSuccess]);
+
+  const deletePostAction = (postId) => {
+    dispatch(deletePost(postId));
+  };
+
+  if (isError) {
+    toast.error(message);
+  }
 
   useEffect(() => {
-    dispatch(getPosts())
-  }, [dispatch])
+    dispatch(getPosts());
+  }, [dispatch]);
 
   if (isLoading) {
-    return <Spinner />
+    return <Spinner />;
   }
 
   return (
     <>
       <div className="section-heading">
-        <BackButton url='/' />
+        <BackButton url="/" />
         <h1>Posts</h1>
       </div>
-      <div className='posts'>
-        <div className='post-headings'>
-          <div>Title</div>
-          <div>Content</div>
+      {posts.length === 0 ? (
+        <p>No posts found</p>
+      ) : (
+        <div className="posts">
+          <div className="post-headings">
+            <div>Title</div>
+            <div>Content</div>
+            <div>Actions</div>
+          </div>
+          {posts.map((post) => (
+            <PostItem
+              key={post.id}
+              post={post}
+              deletePostAction={deletePostAction}
+            />
+          ))}
         </div>
-        {posts.map((post) => (
-          <PostItem key={post.id} post={post} />
-        ))}
-      </div>
+      )}
     </>
-  )
-}
+  );
+};
 
-export default Posts
+export default Posts;

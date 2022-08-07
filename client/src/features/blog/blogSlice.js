@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import blogService from './blogService'
+import { toast } from "react-toastify";
 
 const initialState = {
   posts: [],
@@ -50,6 +51,28 @@ export const getPosts = createAsyncThunk(
   }
 )
 
+// Delete single user post
+export const deletePost = createAsyncThunk(
+  'blog/delete',
+  async (postId, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.access_token
+      await blogService.deletePost(token, postId)
+      toast.success('Deleted post successfully')
+      thunkAPI.dispatch(getPosts());
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString()
+
+      return thunkAPI.rejectWithValue(message)
+    }
+  }
+)
+
 export const postSlice = createSlice({
   name: 'post',
   initialState,
@@ -79,6 +102,18 @@ export const postSlice = createSlice({
         state.posts = action.payload
       })
       .addCase(getPosts.rejected, (state, action) => {
+        state.isLoading = false
+        state.isError = true
+        state.message = action.payload
+      })
+      .addCase(deletePost.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(deletePost.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.isSuccess = true
+      })
+      .addCase(deletePost.rejected, (state, action) => {
         state.isLoading = false
         state.isError = true
         state.message = action.payload

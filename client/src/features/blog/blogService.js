@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_URL = 'http://localhost:8000/blog'
+const API_URL = 'http://localhost:8000/blog/'
 
 // Create new post
 const createBlog = async (postData, token) => {
@@ -27,9 +27,22 @@ const getPosts = async (token) => {
   return response.data
 }
 
+// Delete a post
+const deletePost = async (token, postId) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+
+  const response = await axios.delete(API_URL + postId, config)
+  return response.data
+}
+
 const blogService = {
   createBlog,
   getPosts,
+  deletePost
 }
 
 export default blogService
