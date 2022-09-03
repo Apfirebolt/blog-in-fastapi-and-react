@@ -16,6 +16,17 @@ Following resources were used for motivation in designing this API.
 - [Fast API Official Website](https://fastapi.tiangolo.com/)
 - [Udemy Course - FastAPI](https://www.udemy.com/course/fastapi-the-complete-course/)
 
+## Docker Deployment
+
+- 3/9/22 : Added Docker deployment script for FAST API. 
+
+```
+# Build the Docker image from the given file
+docker build -t fast-image .
+# Run container from the image created
+docker run -d -p 80:80 --name my-fast-api fast-image
+```
+
 ## Authors
 
 * **Amit Prafulla (APFirebolt)** - [My Website](https://apgiiit.com)
