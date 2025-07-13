@@ -1,44 +1,94 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
+# React Dinosaurs
 
-## Available Scripts
+Welcome to the **React Dinosaurs** project! This application is built using modern web technologies like React, TypeScript, and Ant Design to provide an interactive and visually appealing experience for dinosaur enthusiasts.
 
-In the project directory, you can run:
+This app uses the API https://dinosaur-facts-api.shultzlab.com/ to display dinosaur related info.
 
-### `npm start`
+I wanted to experiment with this new library called Jotai for state management. I had a really good experience working with this library.
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Technologies Used
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+![Ant Design](https://img.shields.io/badge/Ant%20Design-0170FE?style=for-the-badge&logo=antdesign&logoColor=white)
+![Jotai](https://img.shields.io/badge/Jotai-000000?style=for-the-badge&logo=jotai&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
 
-### `npm test`
+## Screenshots
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+![Screenshot 1](./screenshots/1.png)
+![Screenshot 2](./screenshots/2.png)
 
-### `npm run build`
+## Features
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **React**: A powerful library for building dynamic user interfaces.
+- **TypeScript**: Ensures type safety and better developer experience.
+- **Ant Design**: A comprehensive UI framework for creating elegant and responsive designs.
+- **Vite**: A fast build tool and development server for efficient development.
+- **HMR**: Hot Module Replacement for a smooth development workflow.
+- **ESLint**: Enforces code quality and consistency.
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+## About the App
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+This app is designed to showcase information about dinosaurs, including their history, characteristics, and fun facts. It leverages Ant Design components to create a polished and user-friendly interface.
 
-### `npm run eject`
+Happy exploring the world of dinosaurs!
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Updates 
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- May 2025 : Tried using AG grid to display tables, but it seems it has compatibility issues with React 19 So ended up using tables from Ant design instead.
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## State Management using Jotai
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+Jotai is a lightweight state management library for React that uses atoms as the core building blocks for state. An atom represents a piece of state, and components that use an atom automatically re-render when the atom's state changes. Jotai provides a simple and flexible API, making it easy to manage both local and global state in your application without the need for complex boilerplate.
 
-## Learn More
+I have this file called atoms.ts inside the src folder. 
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```
+import { atom } from 'jotai';
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+export interface Dinosaur {
+    Name: string;
+    Description: string;
+}
+
+const dinosaursAtom = atom<Dinosaur[]>([]);
+const randomDinosaur = atom<Dinosaur>()
+
+export { dinosaursAtom, randomDinosaur };
+```
+
+I am using 2 atoms here one for random dinosaur and the other for a list of dinosaurs. Here is a sample usage of random dinosaur in the home screen.
+
+```
+import { useSetAtom, useAtom } from "jotai";
+import { randomDinosaur } from "../atoms";
+
+const setRandomDinosaur = useSetAtom(randomDinosaur);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const dinosaur = useAtom(randomDinosaur);
+
+  const getRandomDinosaur = async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get(
+        "https://dinosaur-facts-api.shultzlab.com/dinosaurs/random"
+      );
+      setRandomDinosaur(response.data);
+    } catch (error) {
+      console.error("Error fetching random dinosaur:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+```
+
+You can render {dinosaur} inside your React template, this template would be re-rendered automatically if this atom changes.
+
+## Support
+
+If you like this project, please consider giving it a ⭐ on [GitHub](https://github.com/react_dinosaurs). Your support is greatly appreciated and motivates me to keep building awesome projects!
+
+
+
+
