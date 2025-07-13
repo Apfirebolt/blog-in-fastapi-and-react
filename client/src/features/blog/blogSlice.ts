@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import blogService from './blogService'
 import { toast } from "react-toastify";
 
@@ -134,7 +134,7 @@ export const postSlice = createSlice({
             .addCase(getPosts.pending, (state) => {
                 state.isLoading = true
             })
-            .addCase(getPosts.fulfilled, (state, action: PayloadAction<Post[]>) => {
+            .addCase(getPosts.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.isSuccess = true
                 state.posts = action.payload

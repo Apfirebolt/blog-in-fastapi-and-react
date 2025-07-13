@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import authService from './authService'
 
 // Types
@@ -99,7 +99,7 @@ export const authSlice = createSlice({
             .addCase(register.pending, (state) => {
                 state.isLoading = true
             })
-            .addCase(register.fulfilled, (state, action: PayloadAction<User>) => {
+            .addCase(register.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.isSuccess = true
                 state.user = action.payload
@@ -113,7 +113,7 @@ export const authSlice = createSlice({
             .addCase(login.pending, (state) => {
                 state.isLoading = true
             })
-            .addCase(login.fulfilled, (state, action: PayloadAction<User>) => {
+            .addCase(login.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.isSuccess = true
                 state.user = action.payload

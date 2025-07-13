@@ -1,4 +1,6 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux'
+import { register, reset } from '../features/auth/AuthSlice'
 import { Form, Input, Button, Card } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
 
@@ -13,9 +15,11 @@ interface RegisterFormValues {
 const Register: React.FC = () => {
     const [form] = Form.useForm();
 
-    const onFinish = (values: RegisterFormValues) => {
-        console.log('Register form values:', values);
-        // Handle register logic here
+    const dispatch = useDispatch();
+
+    const onSubmit = (values: RegisterFormValues) => {
+        dispatch(register(values));
+        form.resetFields();
     };
 
     return (
@@ -24,7 +28,7 @@ const Register: React.FC = () => {
                 <Form
                     form={form}
                     name="register"
-                    onFinish={onFinish}
+                    onFinish={onSubmit}
                     layout="vertical"
                     requiredMark={false}
                 >

@@ -1,18 +1,22 @@
 import React from 'react';
+import { useDispatch } from 'react-redux'
+import { login } from '../features/auth/AuthSlice'
 import { Form, Input, Button, Card } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
 interface LoginFormValues {
-    email: string;
+    username: string;
     password: string;
 }
 
 const Login: React.FC = () => {
     const [form] = Form.useForm();
+    const dispatch = useDispatch();
 
     const onFinish = (values: LoginFormValues) => {
-        console.log('Login form values:', values);
-        // Handle login logic here
+    
+        dispatch(login(values));
+        form.resetFields();
     };
 
     return (
@@ -27,7 +31,7 @@ const Login: React.FC = () => {
                 >
                     <Form.Item
                         label="Email"
-                        name="email"
+                        name="username"
                         rules={[
                             { required: true, message: 'Please input your email!' },
                             { type: 'email', message: 'Please enter a valid email!' }
