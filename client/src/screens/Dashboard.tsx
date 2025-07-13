@@ -1,60 +1,27 @@
-// components/Dashboard.tsx
-import { Card, Typography, Spin, Alert, Empty, Row, Col } from 'antd';
-import useDinosaurData from '../hooks/useDinosaurData';
-import { useContext } from 'react';
-import { UserContext } from '../App';
+import React from "react";
+import { Layout, Typography, Button } from "antd";
 
+const { Content } = Layout;
 const { Title, Paragraph } = Typography;
 
-const Dashboard = () => {
-    const { dinosaurs, loading, error } = useDinosaurData();
-    const { user } = useContext(UserContext);
-
-    console.log('User context:', user);
-
-    if (loading) {
-        return (
-            <div style={{ textAlign: 'center', marginTop: '50px' }}>
-                <Spin size="large" />
-                <div style={{ marginTop: '16px', fontSize: '1.2em' }}>Loading dinosaurs...</div>
-            </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div style={{ margin: '50px 20px' }}>
-                <Alert
-                    message="Error"
-                    description={error}
-                    type="error"
-                    showIcon
-                />
-            </div>
-        );
-    }
-
+const Dashboard: React.FC = () => {
     return (
-        <div style={{ padding: '24px' }}>
-            <Title level={1}>Dinosaur List</Title>
-            <Paragraph>
-                Here you can find a list of all the dinosaurs available in our database.
-                Click on any dinosaur to learn more about it. This uses hooks and reducers in React for state management.
-            </Paragraph>
-            {dinosaurs.length === 0 ? (
-                <Empty description="No dinosaurs found" />
-            ) : (
-                <Row gutter={[16, 16]}>
-                    {dinosaurs.map((dinosaur) => (
-                        <Col xs={24} sm={12} md={8} lg={6} key={dinosaur.Name}>
-                            <Card title={dinosaur.Name} hoverable>
-                                <Paragraph>{dinosaur.Description}</Paragraph>
-                            </Card>
-                        </Col>
-                    ))}
-                </Row>
-            )}
-        </div>
+        <Layout>
+            <Content style={{ padding: "50px", marginTop: 64 }}>
+                <div
+                    className="site-layout-content"
+                    style={{ background: "#fff", padding: 24, minHeight: 380, textAlign: "center" }}
+                >
+                    <Title level={1}>Welcome to Our Blog</Title>
+                    <Paragraph style={{ fontSize: "18px", marginBottom: "30px" }}>
+                        Discover amazing articles and insights from our community of writers.
+                    </Paragraph>
+                    <Button type="primary" size="large">
+                        Start Reading
+                    </Button>
+                </div>
+            </Content>
+        </Layout>
     );
 };
 

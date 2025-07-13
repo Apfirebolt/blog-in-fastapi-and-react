@@ -6,10 +6,9 @@ const { Header } = Layout;
 
 const menuItems = [
   { key: "1", label: "Home", path: "/" },
-  { key: "2", label: "Dinosaurs", path: "/dinosaurs" },
-  { key: "3", label: "About", path: "/about" },
-  { key: "4", label: "Dashboard", path: "/dashboard" },
-  { key: "5", label: "Editor", path: "/editor" }, // Added Editor link
+  { key: "2", label: "Dashboard", path: "/dashboard" },
+  { key: "4", label: "Login", path: "/login" },
+  { key: "5", label: "Register", path: "/register" }, // Added Editor link
 ];
 
 const AppHeader: React.FC = () => {
