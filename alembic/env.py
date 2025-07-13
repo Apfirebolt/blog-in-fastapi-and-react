@@ -5,9 +5,16 @@ from sqlalchemy import pool
 
 from alembic import context
 from db import Base
+import os
 
 from auth.models import User
 from blog.models import Blog
+
+
+# Import and load environment variables
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -28,12 +35,16 @@ target_metadata = Base.metadata
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
 
+
 def get_url():
-    db_user = 'postgres'
-    db_password = 'pass12345'
-    db_host ='127.0.0.1'
-    db_name = 'fast-blog'
-    return f"postgresql://{db_user}:{db_password}@{db_host}/{db_name}"
+    db_user = os.getenv("DATABASE_USER")
+    db_password = os.getenv("DATABASE_PASSWORD")
+    db_host = os.getenv("DATABASE_HOST")
+    db_name = os.getenv("DATABASE_NAME")
+    db_port = os.getenv("DATABASE_PORT", "5432")
+
+    return f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
+
 
 def run_migrations_offline():
     """Run migrations in 'offline' mode.
@@ -69,13 +80,13 @@ def run_migrations_online():
     configuration = config.get_section(config.config_ini_section)
     configuration["sqlalchemy.url"] = get_url()
     connectable = engine_from_config(
-        configuration, prefix="sqlalchemy.", poolclass=pool.NullPool,
+        configuration,
+        prefix="sqlalchemy.",
+        poolclass=pool.NullPool,
     )
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()
