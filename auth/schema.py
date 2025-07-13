@@ -1,11 +1,11 @@
 import email
 from typing import Optional, List
-from pydantic import BaseModel, constr, EmailStr
+from pydantic import BaseModel, EmailStr
 from blog.schema import BlogList
 
 
 class User(BaseModel):
-    username: constr(min_length=2, max_length=50)
+    username: str
     email: EmailStr
     firstName: str
     lastName: str
