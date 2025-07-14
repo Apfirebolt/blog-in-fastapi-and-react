@@ -51,7 +51,9 @@ def login(request: schema.Login,
 
     # Generate a JWT Token
     access_token = create_access_token(data={"sub": user.email, "id": user.id})
-    return {"access_token": access_token, "token_type": "bearer"}
+    user = schema.UserLogin(
+        id=user.id, email=user.email, username=user.username, token=access_token)
+    return user
 
 
 @router.get('/profile', response_model=schema.DisplayAccount)

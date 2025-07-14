@@ -1,29 +1,28 @@
 from typing import Optional
 from pydantic import BaseModel, constr
-
+from auth.schema import DisplayUser
 
 class BlogBase(BaseModel):
-    id: Optional[int]
     title: str
     content: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
+
 
 class BlogUpdate(BaseModel):
     title: Optional[str]
     content: Optional[str]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class BlogList(BaseModel):
     id: int
     title: str
     content: str
-    owner_id: int
-    createdAt: Optional[str]
+    owner: DisplayUser
 
     class Config:
-        orm_mode = True
+        from_attributes = True

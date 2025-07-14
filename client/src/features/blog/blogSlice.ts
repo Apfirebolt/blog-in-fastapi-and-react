@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import blogService from './blogService'
 import { toast } from "react-toastify";
 
@@ -6,9 +6,7 @@ interface Post {
     id: string;
     title: string;
     content: string;
-    author: string;
     createdAt: string;
-    // Add other post properties as needed
 }
 
 interface BlogState {
@@ -23,7 +21,10 @@ interface BlogState {
 interface RootState {
     auth: {
         user: {
-            access_token: string;
+            id: string;
+            username: string;
+            email: string;
+            token: string;
         };
     };
 }
@@ -44,9 +45,9 @@ export const createPost = createAsyncThunk<
     { state: RootState; rejectValue: string }
 >(
     'blog/',
-    async (postData, thunkAPI) => {
+    async (postData: Post, thunkAPI: any) => {
         try {
-            const token = thunkAPI.getState().auth.user.access_token
+            const token = thunkAPI.getState().auth.user.token
             return await blogService.createBlog(postData, token)
         } catch (error: any) {
             const message =
@@ -70,7 +71,7 @@ export const getPosts = createAsyncThunk<
     'blog/getAll',
     async (_, thunkAPI) => {
         try {
-            const token = thunkAPI.getState().auth.user.access_token
+            const token = thunkAPI.getState().auth.user.token
             return await blogService.getPosts(token)
         } catch (error: any) {
             const message =
@@ -134,7 +135,7 @@ export const postSlice = createSlice({
             .addCase(getPosts.pending, (state) => {
                 state.isLoading = true
             })
-            .addCase(getPosts.fulfilled, (state, action: PayloadAction<Post[]>) => {
+            .addCase(getPosts.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.isSuccess = true
                 state.posts = action.payload

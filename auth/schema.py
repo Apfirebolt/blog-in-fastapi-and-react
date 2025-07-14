@@ -1,7 +1,6 @@
 import email
 from typing import Optional, List
 from pydantic import BaseModel, EmailStr
-from blog.schema import BlogList
 
 
 class User(BaseModel):
@@ -12,16 +11,26 @@ class User(BaseModel):
     password: str
 
 
+class DisplayUser(BaseModel):
+    id: int
+    username: str
+
+class UserLogin(BaseModel):
+    id: int
+    email: EmailStr
+    username: str
+    token: Optional[str] = None
+
+
 class DisplayAccount(BaseModel):
     id: int
     username: str
     email: str
     firstName: Optional[str]
     lastName: Optional[str]
-    posts: List[BlogList] = []
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class Login(BaseModel):

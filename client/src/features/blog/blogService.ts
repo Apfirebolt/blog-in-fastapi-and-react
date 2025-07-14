@@ -1,62 +1,54 @@
-import axios from 'axios'
+import axios from "axios";
+import type { BlogPost, ApiResponse } from "../../types/Blog";
 
-const API_URL = 'http://localhost:8000/blog/'
+const API_URL = "http://localhost:8000/blog/";
 
-interface BlogPost {
-    id?: string
-    title: string
-    content: string
-    author?: string
-    createdAt?: string
-    updatedAt?: string
-}
 
-interface ApiResponse {
-    data: BlogPost | BlogPost[]
-    message?: string
-}
 
 // Create new post
-const createBlog = async (postData: Omit<BlogPost, 'id' | 'createdAt' | 'updatedAt'>, token: string): Promise<BlogPost> => {
-    const config = {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    }
+const createBlog = async (
+  postData: Omit<BlogPost, "id" | "createdAt" | "updatedAt">,
+  token: string
+): Promise<BlogPost> => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
 
-    const response = await axios.post<BlogPost>(API_URL, postData, config)
+  const response = await axios.post<BlogPost>(API_URL, postData, config);
 
-    return response.data
-}
+  return response.data;
+};
 
 // Get user blog posts
 const getPosts = async (token: string): Promise<BlogPost[]> => {
-    const config = {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    }
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
 
-    const response = await axios.get<BlogPost[]>(API_URL, config)
-    return response.data
-}
+  const response = await axios.get<BlogPost[]>(API_URL, config);
+  return response.data;
+};
 
 // Delete a post
 const deletePost = async (token: string, postId: string): Promise<any> => {
-    const config = {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    }
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
 
-    const response = await axios.delete(API_URL + postId, config)
-    return response.data
-}
+  const response = await axios.delete(API_URL + postId, config);
+  return response.data;
+};
 
 const blogService = {
-    createBlog,
-    getPosts,
-    deletePost
-}
+  createBlog,
+  getPosts,
+  deletePost,
+};
 
-export default blogService
+export default blogService;
