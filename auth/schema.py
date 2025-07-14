@@ -1,7 +1,6 @@
 import email
 from typing import Optional, List
 from pydantic import BaseModel, EmailStr
-from blog.schema import BlogList
 
 
 class User(BaseModel):
@@ -11,6 +10,10 @@ class User(BaseModel):
     lastName: str
     password: str
 
+
+class DisplayUser(BaseModel):
+    id: int
+    username: str
 
 class UserLogin(BaseModel):
     id: int
@@ -25,7 +28,6 @@ class DisplayAccount(BaseModel):
     email: str
     firstName: Optional[str]
     lastName: Optional[str]
-    posts: List[BlogList] = []
 
     class Config:
         from_attributes = True

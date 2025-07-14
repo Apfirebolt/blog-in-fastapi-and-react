@@ -6,7 +6,7 @@ const { Footer } = Layout;
 const AppFooter: React.FC = () => {
     return (
         <Footer style={{ textAlign: 'center' }}>
-            Dinosaur App ©{new Date().getFullYear()} Created by Amit
+            Fast Blog ©{new Date().getFullYear()} Created by Amit
         </Footer>
     );
 };

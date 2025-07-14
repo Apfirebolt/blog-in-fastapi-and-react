@@ -9,7 +9,6 @@ const { Header } = Layout;
 const AppHeader: React.FC = () => {
   const dispatch = useDispatch();
   const user = useSelector((state: any) => state.auth.user);
-  console.log("User in Header:", user);
 
   const getMenuItems = () => {
     const baseItems = [

@@ -6,15 +6,20 @@ const { TextArea } = Input;
 interface PostFormData {
     title: string;
     content: string;
-    author: string;
 }
 
-const PostForm: React.FC = () => {
+interface PostFormProps {
+    closeForm: () => void;
+    createPost: (data: PostFormData) => void;
+}
+
+const PostForm: React.FC<PostFormProps> = ({ closeForm, createPost }) =>  {
     const [form] = Form.useForm();
 
     const onFinish = (values: PostFormData) => {
         // Handle form submission here
         console.log('Form submitted:', values);
+        createPost(values);
     };
 
     return (
@@ -37,14 +42,6 @@ const PostForm: React.FC = () => {
                 </Form.Item>
 
                 <Form.Item
-                    label="Author"
-                    name="author"
-                    rules={[{ required: true, message: 'Please input the author!' }]}
-                >
-                    <Input placeholder="Enter author name" />
-                </Form.Item>
-
-                <Form.Item
                     label="Content"
                     name="content"
                     rules={[{ required: true, message: 'Please input the content!' }]}
@@ -58,6 +55,14 @@ const PostForm: React.FC = () => {
                 <Form.Item>
                     <Button type="primary" htmlType="submit" block>
                         Create Post
+                    </Button>
+
+                    <Button 
+                        style={{ marginTop: '10px' }} 
+                        onClick={() => closeForm()} 
+                        block
+                    >
+                        Cancel
                     </Button>
                 </Form.Item>
             </Form>
