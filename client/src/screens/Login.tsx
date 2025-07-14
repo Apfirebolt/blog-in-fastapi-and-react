@@ -2,12 +2,9 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { login } from "../features/auth/AuthSlice";
 import { Form, Input, Button, Card } from "antd";
+import type { LoginFormValues } from "../types/User.ts";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 
-interface LoginFormValues {
-  username: string;
-  password: string;
-}
 
 const Login: React.FC = () => {
   const [form] = Form.useForm();

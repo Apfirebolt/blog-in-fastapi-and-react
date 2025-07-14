@@ -12,12 +12,10 @@ export interface LoginFormValues {
 }
 
 export interface AuthResponse {
-    token: string
-    user: {
-        id: string
-        email: string
-        name: string
-    }
+    id: string;
+    username: string;
+    email: string;
+    token: string;
 }
 
 export interface User {

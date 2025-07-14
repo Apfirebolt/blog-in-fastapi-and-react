@@ -1,5 +1,6 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
+import type { RegisterFormValues } from "../types/User.ts";
 import { register, reset } from "../features/auth/AuthSlice";
 import { Form, Input, Button, Card, Row, Col } from "antd";
 import { UserOutlined, LockOutlined, MailOutlined } from "@ant-design/icons";

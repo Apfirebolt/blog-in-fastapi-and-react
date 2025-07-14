@@ -1,10 +1,21 @@
-import React from "react";
-import { Layout, Typography, Button } from "antd";
+import React, { useState } from "react";
+import { Layout, Typography, Button, Modal } from "antd";
+import PostForm from "../components/Post";
 
 const { Content } = Layout;
 const { Title, Paragraph } = Typography;
 
 const Dashboard: React.FC = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
+
     return (
         <Layout>
             <Content style={{ padding: "50px", marginTop: 64 }}>
@@ -16,11 +27,20 @@ const Dashboard: React.FC = () => {
                     <Paragraph style={{ fontSize: "18px", marginBottom: "30px" }}>
                         Discover amazing articles and insights from our community of writers.
                     </Paragraph>
-                    <Button type="primary" size="large">
-                        Start Reading
+                    <Button type="primary" size="large" onClick={showModal}>
+                        Create Post
                     </Button>
                 </div>
             </Content>
+            
+            <Modal
+                open={isModalOpen}
+                onCancel={handleCancel}
+                footer={null}
+                width={800}
+            >
+                <PostForm />
+            </Modal>
         </Layout>
     );
 };

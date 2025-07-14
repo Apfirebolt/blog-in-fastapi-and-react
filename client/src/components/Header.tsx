@@ -1,37 +1,59 @@
 import React from "react";
-import { Layout, Menu } from "antd";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../features/auth/AuthSlice";
+import { Layout, Menu, Button } from "antd";
 import { Link } from "react-router-dom";
 
 const { Header } = Layout;
 
-const menuItems = [
-  { key: "1", label: "Home", path: "/" },
-  { key: "2", label: "Dashboard", path: "/dashboard" },
-  { key: "4", label: "Login", path: "/login" },
-  { key: "5", label: "Register", path: "/register" }, // Added Editor link
-];
-
 const AppHeader: React.FC = () => {
+  const dispatch = useDispatch();
+  const user = useSelector((state: any) => state.auth.user);
+  console.log("User in Header:", user);
+
+  const getMenuItems = () => {
+    const baseItems = [
+      { key: "1", label: "Home", path: "/" },
+      { key: "2", label: "Dashboard", path: "/dashboard" },
+    ];
+
+    if (user) {
+      return baseItems;
+    } else {
+      return [
+        ...baseItems,
+        { key: "4", label: "Login", path: "/login" },
+        { key: "5", label: "Register", path: "/register" },
+      ];
+    }
+  };
+
+  const handleLogout = () => {
+    // Dispatch the logout action
+    console.log("Logging out user:", user);
+    dispatch(logout());
+  };
+
   return (
     <Header
       style={{
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        backgroundColor: "#670D2F", // New background color
+        backgroundColor: "#670D2F",
       }}
     >
       <Menu
-        theme="light" // Changed theme to light
+        theme="light"
         mode="horizontal"
         defaultSelectedKeys={["1"]}
         style={{
           flex: 1,
-          backgroundColor: "#670D2F", // Match header background
-          color: "white", // Text color
+          backgroundColor: "#670D2F",
+          color: "white",
         }}
       >
-        {menuItems.map((item) => (
+        {getMenuItems().map((item) => (
           <Menu.Item key={item.key} style={{ color: "white" }}>
             <Link to={item.path} style={{ color: "white" }}>
               {item.label}
@@ -39,15 +61,33 @@ const AppHeader: React.FC = () => {
           </Menu.Item>
         ))}
       </Menu>
-      <div
-        className="logo"
-        style={{
-          color: "white",
-          fontSize: "32px",
-          fontWeight: "bold",
-        }}
-      >
-        Dino App
+      
+      <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+        {user && (
+          <>
+        <span style={{ color: "white", marginRight: "8px" }}>
+          Welcome, {user.username || user.name || "User"}
+        </span>
+        <Button 
+          type="primary" 
+          ghost 
+          onClick={() => handleLogout()}
+          style={{ borderColor: "white", color: "white" }}
+        >
+          Logout
+        </Button>
+          </>
+        )}
+        <div
+          className="logo"
+          style={{
+        color: "white",
+        fontSize: "32px",
+        fontWeight: "bold",
+          }}
+        >
+          Fast Blog
+        </div>
       </div>
     </Header>
   );

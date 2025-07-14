@@ -12,6 +12,13 @@ class User(BaseModel):
     password: str
 
 
+class UserLogin(BaseModel):
+    id: int
+    email: EmailStr
+    username: str
+    token: Optional[str] = None
+
+
 class DisplayAccount(BaseModel):
     id: int
     username: str
@@ -21,7 +28,7 @@ class DisplayAccount(BaseModel):
     posts: List[BlogList] = []
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class Login(BaseModel):
