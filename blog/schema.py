@@ -8,14 +8,14 @@ class BlogBase(BaseModel):
     content: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class BlogUpdate(BaseModel):
     title: Optional[str]
     content: Optional[str]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class BlogList(BaseModel):
@@ -26,4 +26,4 @@ class BlogList(BaseModel):
     createdAt: Optional[str]
 
     class Config:
-        orm_mode = True
+        from_attributes = True

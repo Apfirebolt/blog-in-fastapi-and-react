@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+ import { ToastContainer } from 'react-toastify';
 
 import Home from './screens/Home';
 import Login from './screens/Login';
@@ -21,6 +22,18 @@ const App: React.FC = () => {
           <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
         <Footer />
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
     </Router>
   );
 };

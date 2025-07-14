@@ -1,32 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import type { RegisterFormValues, LoginFormValues, User, AuthState } from '../../types/User'
 import authService from './authService'
-
-// Types
-interface User {
-    id: string
-    name: string
-    email: string
-    token: string
-}
-
-interface AuthState {
-    user: User | null
-    isError: boolean
-    isSuccess: boolean
-    isLoading: boolean
-    message: string
-}
-
-interface RegisterData {
-    name: string
-    email: string
-    password: string
-}
-
-interface LoginData {
-    email: string
-    password: string
-}
 
 // Get user from localstorage
 const user: User | null = JSON.parse(localStorage.getItem('user') || 'null')
@@ -40,9 +14,9 @@ const initialState: AuthState = {
 }
 
 // Register new user
-export const register = createAsyncThunk<User, RegisterData, { rejectValue: string }>(
+export const register = createAsyncThunk<User, RegisterFormValues, { rejectValue: string }>(
     'auth/register',
-    async (user, thunkAPI) => {
+    async (user : any, thunkAPI: any) => {
         try {
             return await authService.register(user)
         } catch (error: any) {
@@ -59,9 +33,9 @@ export const register = createAsyncThunk<User, RegisterData, { rejectValue: stri
 )
 
 // Login user
-export const login = createAsyncThunk<User, LoginData, { rejectValue: string }>(
+export const login = createAsyncThunk<User, LoginFormValues, { rejectValue: string }>(
     'auth/login', 
-    async (user, thunkAPI) => {
+    async (user: LoginFormValues, thunkAPI: any) => {
         try {
             return await authService.login(user)
         } catch (error: any) {
