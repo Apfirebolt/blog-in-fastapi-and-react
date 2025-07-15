@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import blogService from './blogService'
+import { logout } from '../auth/AuthSlice';
 import { toast } from "react-toastify";
 
 interface Post {
@@ -38,6 +39,21 @@ const initialState: BlogState = {
     message: '',
 }
 
+// Helper function to check for 401 and dispatch logout
+const handleUnauthorized = (error: any, thunkAPI: any) => {
+  const message =
+    (error.response && error.response.data && error.response.data.message) ||
+    error.message ||
+    error.toString();
+
+  if (error.response && error.response.status === 401) {
+    toast.error('Session expired or unauthorized. Please login again.');
+    thunkAPI.dispatch(logout());
+    return thunkAPI.rejectWithValue('Unauthorized');
+  }
+  return thunkAPI.rejectWithValue(message);
+};
+
 // Create new blog
 export const createPost = createAsyncThunk<
     Post,
@@ -48,16 +64,11 @@ export const createPost = createAsyncThunk<
     async (postData: Post, thunkAPI: any) => {
         try {
             const token = thunkAPI.getState().auth.user.token
-            return await blogService.createBlog(postData, token)
+            await blogService.createBlog(postData, token)
+            toast.success('Created post successfully')
+            thunkAPI.dispatch(getPosts());
         } catch (error: any) {
-            const message =
-                (error.response &&
-                    error.response.data &&
-                    error.response.data.message) ||
-                error.message ||
-                error.toString()
-
-            return thunkAPI.rejectWithValue(message)
+            return handleUnauthorized(error, thunkAPI);
         }
     }
 )
@@ -74,14 +85,7 @@ export const getPosts = createAsyncThunk<
             const token = thunkAPI.getState().auth.user.token
             return await blogService.getPosts(token)
         } catch (error: any) {
-            const message =
-                (error.response &&
-                    error.response.data &&
-                    error.response.data.message) ||
-                error.message ||
-                error.toString()
-
-            return thunkAPI.rejectWithValue(message)
+            return handleUnauthorized(error, thunkAPI);
         }
     }
 )
@@ -95,19 +99,32 @@ export const deletePost = createAsyncThunk<
     'blog/delete',
     async (postId: string, thunkAPI) => {
         try {
-            const token = thunkAPI.getState().auth.user.access_token
+            const token = thunkAPI.getState().auth.user.token
             await blogService.deletePost(token, postId)
             toast.success('Deleted post successfully')
             thunkAPI.dispatch(getPosts());
         } catch (error: any) {
-            const message =
-                (error.response &&
-                    error.response.data &&
-                    error.response.data.message) ||
-                error.message ||
-                error.toString()
+            return handleUnauthorized(error, thunkAPI);
+        }
+    }
+)
 
-            return thunkAPI.rejectWithValue(message)
+// Update single user post
+export const updatePost = createAsyncThunk<
+    Post,
+    { postId: string; postData: Partial<Post> },
+    { state: RootState; rejectValue: string }
+>(
+    'blog/update',
+    async ({ postId, postData }, thunkAPI) => {
+        try {
+            const token = thunkAPI.getState().auth.user.token
+            const updatedPost = await blogService.updatePost(postId, postData, token)
+            toast.success('Updated post successfully')
+            thunkAPI.dispatch(getPosts());
+            return updatedPost
+        } catch (error: any) {
+            return handleUnauthorized(error, thunkAPI);
         }
     }
 )

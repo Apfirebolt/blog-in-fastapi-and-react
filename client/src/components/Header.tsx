@@ -1,6 +1,7 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../features/auth/AuthSlice";
+import { useNavigate } from "react-router-dom";
 import { Layout, Menu, Button } from "antd";
 import { Link } from "react-router-dom";
 
@@ -8,6 +9,7 @@ const { Header } = Layout;
 
 const AppHeader: React.FC = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const user = useSelector((state: any) => state.auth.user);
 
   const getMenuItems = () => {
@@ -29,8 +31,8 @@ const AppHeader: React.FC = () => {
 
   const handleLogout = () => {
     // Dispatch the logout action
-    console.log("Logging out user:", user);
     dispatch(logout());
+    navigate("/login");
   };
 
   return (

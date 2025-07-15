@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Form, Input, Button, Card } from 'antd';
 
 const { TextArea } = Input;
@@ -11,16 +11,29 @@ interface PostFormData {
 interface PostFormProps {
     closeForm: () => void;
     createPost: (data: PostFormData) => void;
+    updatePost?: (postId: string, data: PostFormData) => void;
+    post?: PostFormData;
 }
 
-const PostForm: React.FC<PostFormProps> = ({ closeForm, createPost }) =>  {
+const PostForm: React.FC<PostFormProps> = ({ closeForm, createPost, updatePost, post }) =>  {
     const [form] = Form.useForm();
 
     const onFinish = (values: PostFormData) => {
-        // Handle form submission here
-        console.log('Form submitted:', values);
-        createPost(values);
+        if (post && updatePost) {
+            updatePost(post.id, values);
+        } else {
+            createPost(values);
+        }
+        form.resetFields();
     };
+
+    useEffect(() => {
+        if (post) {
+            form.setFieldsValue(post);
+        } else {
+            form.resetFields();
+        }
+    }, [post, form]);
 
     return (
         <Card 
@@ -54,7 +67,7 @@ const PostForm: React.FC<PostFormProps> = ({ closeForm, createPost }) =>  {
 
                 <Form.Item>
                     <Button type="primary" htmlType="submit" block>
-                        Create Post
+                        {post ? 'Update Post' : 'Create Post'}
                     </Button>
 
                     <Button 

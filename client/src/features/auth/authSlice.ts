@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import type { RegisterFormValues, LoginFormValues, User, AuthState } from '../../types/User'
 import authService from './authService'
+import { toast } from 'react-toastify'
 
 // Get user from localstorage
 const user: User | null = JSON.parse(localStorage.getItem('user') || 'null')
@@ -40,10 +41,10 @@ export const login = createAsyncThunk<User, LoginFormValues, { rejectValue: stri
             return await authService.login(user)
         } catch (error: any) {
             const message =
-                (error.response && error.response.data && error.response.data.message) ||
+                (error.response && error.response.data && error.response.data.detail) ||
                 error.message ||
                 error.toString()
-
+            toast.error(message)
             return thunkAPI.rejectWithValue(message)
         }
     }
@@ -67,6 +68,9 @@ export const authSlice = createSlice({
             state.isSuccess = false
             state.message = ''
         },
+        resetSuccess: (state) => {
+            state.isSuccess = false
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -104,5 +108,5 @@ export const authSlice = createSlice({
     },
 })
 
-export const { reset } = authSlice.actions
+export const { reset, resetSuccess } = authSlice.actions
 export default authSlice.reducer

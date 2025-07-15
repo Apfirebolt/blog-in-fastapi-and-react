@@ -4,7 +4,6 @@ import type { BlogPost, ApiResponse } from "../../types/Blog";
 const API_URL = "http://localhost:8000/blog/";
 
 
-
 // Create new post
 const createBlog = async (
   postData: Omit<BlogPost, "id" | "createdAt" | "updatedAt">,
@@ -45,10 +44,27 @@ const deletePost = async (token: string, postId: string): Promise<any> => {
   return response.data;
 };
 
+// Update a post
+const updatePost = async (
+  postId: string,
+  postData: Omit<BlogPost, "id" | "createdAt" | "updatedAt">,
+  token: string
+): Promise<BlogPost> => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.put<BlogPost>(API_URL + postId, postData, config);
+  return response.data;
+};
+
 const blogService = {
   createBlog,
   getPosts,
   deletePost,
+  updatePost
 };
 
 export default blogService;

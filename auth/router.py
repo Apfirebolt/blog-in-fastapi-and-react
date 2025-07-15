@@ -43,7 +43,7 @@ def login(request: schema.Login,
     user = database.query(User).filter(User.email == request.username).first()
     if not user:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Invalid Credentials throw")
+            status_code=status.HTTP_404_NOT_FOUND, detail="User does not exist")
 
     if not hashing.verify_password(request.password, user.password):
         raise HTTPException(

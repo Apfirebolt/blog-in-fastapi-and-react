@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 import type { RegisterFormValues, LoginFormValues, AuthResponse } from '../../types/User'
 
 const API_URL = 'http://localhost:8000/auth'

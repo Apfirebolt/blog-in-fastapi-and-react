@@ -1,19 +1,33 @@
-import React from "react";
-import { useDispatch } from "react-redux";
-import { login } from "../features/auth/AuthSlice";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { login, resetSuccess } from "../features/auth/AuthSlice";
 import { Form, Input, Button, Card } from "antd";
 import type { LoginFormValues } from "../types/User.ts";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
+
+// redirect using react-router-dom
 
 
 const Login: React.FC = () => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isSuccess } = useSelector((state: any) => state.auth);
+
 
   const onFinish = (values: LoginFormValues) => {
     dispatch(login(values));
     form.resetFields();
   };
+
+  // if isSuccess is true, redirect to home page and reset success state
+  useEffect(() => {
+    if (isSuccess) {
+      navigate("/dashboard");
+      dispatch(resetSuccess()); 
+    }
+  }, [isSuccess, dispatch, navigate]);
 
   return (
     <div
