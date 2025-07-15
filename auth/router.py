@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status, Response, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, status, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from typing import List
@@ -29,7 +29,10 @@ async def create_user_registration(request: schema.User,
         )
 
     new_user = await services.new_user_register(request, database)
-    return new_user
+    access_token = create_access_token(data={"sub": new_user.email, "id": new_user.id})
+    user = schema.UserLogin(
+        id=user.id, email=user.email, username=user.username, token=access_token)
+    return user
 
 
 @router.get('/', response_model=List[schema.DisplayAccount])

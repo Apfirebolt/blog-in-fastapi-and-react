@@ -28,6 +28,7 @@ interface RootState {
             token: string;
         };
     };
+    post: BlogState;
 }
 
 const initialState: BlogState = {
