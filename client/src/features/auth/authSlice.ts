@@ -47,9 +47,9 @@ export const login = createAsyncThunk<
     User,
     LoginFormValues,
     {
-        rejectValue: string; // Type of the rejected action payload
-        state: RootState; // Type for thunkAPI.getState()
-        dispatch: AppDispatch; // Type for thunkAPI.dispatch()
+        rejectValue: string;
+        state: RootState;
+        dispatch: AppDispatch;
     }
 >(
     'auth/login',
