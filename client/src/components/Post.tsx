@@ -11,16 +11,20 @@ interface PostFormData {
 interface PostFormProps {
     closeForm: () => void;
     createPost: (data: PostFormData) => void;
+    updatePost?: (postId: string, data: PostFormData) => void;
     post?: PostFormData;
 }
 
-const PostForm: React.FC<PostFormProps> = ({ closeForm, createPost, post }) =>  {
+const PostForm: React.FC<PostFormProps> = ({ closeForm, createPost, updatePost, post }) =>  {
     const [form] = Form.useForm();
 
     const onFinish = (values: PostFormData) => {
-        // Handle form submission here
-        console.log('Form submitted:', values);
-        createPost(values);
+        if (post && updatePost) {
+            updatePost(post.id, values);
+        } else {
+            createPost(values);
+        }
+        form.resetFields();
     };
 
     useEffect(() => {
@@ -63,7 +67,7 @@ const PostForm: React.FC<PostFormProps> = ({ closeForm, createPost, post }) =>  
 
                 <Form.Item>
                     <Button type="primary" htmlType="submit" block>
-                        Create Post
+                        {post ? 'Update Post' : 'Create Post'}
                     </Button>
 
                     <Button 

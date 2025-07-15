@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createPost, getPosts, deletePost } from "../features/blog/BlogSlice";
+import { createPost, getPosts, deletePost, updatePost } from "../features/blog/BlogSlice";
 import { Layout, Typography, Button, Modal, Card, Row, Col } from "antd";
 import PostForm from "../components/Post";
 import Confirm from "../components/Confirm";
@@ -38,6 +38,13 @@ const Dashboard: React.FC = () => {
     console.log("Editing post:", post);
     setSelectedPost(post);
     setIsModalOpen(true);
+  };
+
+  const handleUpdatePostUtil = async (postId: string, postData: any) => {
+    await dispatch(updatePost({ postId, postData }));
+    await dispatch(getPosts());
+    setIsModalOpen(false);
+    setSelectedPost(null);
   };
 
   const openDeletePostModal = (post: any) => {
@@ -162,6 +169,7 @@ const Dashboard: React.FC = () => {
       >
         <PostForm
           createPost={handleCreatePost}
+          updatePost={handleUpdatePostUtil}
           closeForm={handleCancel}
           post={selectedPost}
         />

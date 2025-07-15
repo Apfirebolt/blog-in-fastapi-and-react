@@ -33,20 +33,20 @@ async def blog_list(database: Session = Depends(db.get_db),
     return result
 
 
-@router.get('/{blog_id}', status_code=status.HTTP_200_OK, response_model=schema.BlogBase)
+@router.get('/{blog_id}/', status_code=status.HTTP_200_OK, response_model=schema.BlogBase)
 async def get_blog_by_id(blog_id: int, database: Session = Depends(db.get_db),
                                 current_user: User = Depends(get_current_user)):                            
     return await services.get_blog_by_id(blog_id, current_user.id, database)
 
 
-@router.delete('/{blog_id}', status_code=status.HTTP_204_NO_CONTENT, response_class=Response)
+@router.delete('/{blog_id}/', status_code=status.HTTP_204_NO_CONTENT, response_class=Response)
 async def delete_blog_by_id(blog_id: int,
                                 database: Session = Depends(db.get_db),
                                 current_user: User = Depends(get_current_user)):
     return await services.delete_blog_by_id(blog_id, current_user.id, database)
 
 
-@router.patch('/{blog_id}', status_code=status.HTTP_200_OK, response_model=schema.BlogBase)
+@router.put('/{blog_id}/', status_code=status.HTTP_200_OK, response_model=schema.BlogBase)
 async def update_blog_by_id(request: schema.BlogUpdate, blog_id: int, database: Session = Depends(db.get_db),
                                 current_user: User = Depends(get_current_user)):                            
     return await services.update_blog_by_id(request, blog_id, current_user.id, database)
