@@ -95,7 +95,7 @@ export const deletePost = createAsyncThunk<
     'blog/delete',
     async (postId: string, thunkAPI) => {
         try {
-            const token = thunkAPI.getState().auth.user.access_token
+            const token = thunkAPI.getState().auth.user.token
             await blogService.deletePost(token, postId)
             toast.success('Deleted post successfully')
             thunkAPI.dispatch(getPosts());

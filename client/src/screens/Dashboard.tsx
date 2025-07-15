@@ -1,18 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createPost, getPosts } from "../features/blog/BlogSlice";
+import { createPost, getPosts, deletePost } from "../features/blog/BlogSlice";
 import { Layout, Typography, Button, Modal, Card, Row, Col } from "antd";
 import PostForm from "../components/Post";
+import Confirm from "../components/Confirm";
 
 const { Content } = Layout;
 const { Title, Paragraph } = Typography;
 
 const Dashboard: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState("");
+  const [confirmTitle, setConfirmTitle] = useState("Confirm Deletion");
+  const [selectedPost, setSelectedPost] = useState(null);
   const posts = useSelector((state: any) => state.blog.posts);
+  const user = useSelector((state: any) => state.auth.user);
   const dispatch = useDispatch();
 
   const showModal = () => {
+    setSelectedPost(null);
     setIsModalOpen(true);
   };
 
@@ -24,6 +31,36 @@ const Dashboard: React.FC = () => {
     await dispatch(createPost(postData));
     await dispatch(getPosts());
     setIsModalOpen(false);
+  };
+
+  const handleEditPost = (post: any) => {
+    // Logic to handle post editing
+    console.log("Editing post:", post);
+    setSelectedPost(post);
+    setIsModalOpen(true);
+  };
+
+  const openDeletePostModal = (post: any) => {
+    setSelectedPost(post);
+    setConfirmMessage(
+      `Are you sure you want to delete the post titled "${post.title}"?`
+    );
+    setIsDeleteModalOpen(true);
+  };
+
+  const cancelDeletePost = () => {
+    setIsDeleteModalOpen(false);
+    setSelectedPost(null);
+  };
+
+  const handleDeletePost = async (postId: number) => {
+    // Logic to handle post deletion
+    console.log("Deleting post with ID:", postId);
+    // You would typically dispatch a delete action here
+    await dispatch(deletePost(postId));
+    await dispatch(getPosts());
+    setIsDeleteModalOpen(false);
+    setSelectedPost(null);
   };
 
   console.log("Posts in Dashboard:", posts);
@@ -74,6 +111,29 @@ const Dashboard: React.FC = () => {
                         By: {post.owner ? post.owner.username : "Unknown"}
                       </Paragraph>
                     )}
+                    {post.owner && post.owner.username === user?.username && (
+                      <div
+                        style={{
+                          marginTop: "12px",
+                          display: "flex",
+                          gap: "8px",
+                        }}
+                      >
+                        <Button
+                          size="small"
+                          onClick={() => handleEditPost(post)}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          size="small"
+                          danger
+                          onClick={() => openDeletePostModal(post)}
+                        >
+                          Delete
+                        </Button>
+                      </div>
+                    )}
                   </Card>
                 </Col>
               ))}
@@ -81,6 +141,18 @@ const Dashboard: React.FC = () => {
           </div>
         )}
       </Content>
+      <Confirm
+        isOpen={isDeleteModalOpen}
+        title={confirmTitle}
+        message={confirmMessage}
+        confirmText="Delete"
+        cancelText="Cancel"
+        onConfirm={() => {
+          handleDeletePost(selectedPost.id);
+          setIsDeleteModalOpen(false);
+        }}
+        onCancel={() => cancelDeletePost(false)}
+      />
 
       <Modal
         open={isModalOpen}
@@ -88,7 +160,11 @@ const Dashboard: React.FC = () => {
         footer={null}
         width={800}
       >
-        <PostForm createPost={handleCreatePost} closeForm={handleCancel} />
+        <PostForm
+          createPost={handleCreatePost}
+          closeForm={handleCancel}
+          post={selectedPost}
+        />
       </Modal>
     </Layout>
   );
