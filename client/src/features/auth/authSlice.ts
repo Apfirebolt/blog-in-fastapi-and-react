@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import type { RegisterFormValues, LoginFormValues, User, AuthState } from '../../types/User'
 import authService from './authService'
 import { toast } from 'react-toastify'
+import type { RootState, AppDispatch } from '../../app/store'
 
 // Get user from localstorage
 const user: User | null = JSON.parse(localStorage.getItem('user') || 'null')
@@ -15,9 +16,17 @@ const initialState: AuthState = {
 }
 
 // Register new user
-export const register = createAsyncThunk<User, RegisterFormValues, { rejectValue: string }>(
+export const register = createAsyncThunk<
+    User,
+    RegisterFormValues,
+    {
+        rejectValue: string;
+        state: RootState;
+        dispatch: AppDispatch;
+    }
+>(
     'auth/register',
-    async (user : RegisterFormValues, thunkAPI: any) => {
+    async (user: RegisterFormValues, thunkAPI) => { // thunkAPI is now implicitly typed
         try {
             return await authService.register(user)
         } catch (error: any) {
@@ -34,9 +43,17 @@ export const register = createAsyncThunk<User, RegisterFormValues, { rejectValue
 )
 
 // Login user
-export const login = createAsyncThunk<User, LoginFormValues, { rejectValue: string }>(
-    'auth/login', 
-    async (user: LoginFormValues, thunkAPI: any) => {
+export const login = createAsyncThunk<
+    User,
+    LoginFormValues,
+    {
+        rejectValue: string;
+        state: RootState;
+        dispatch: AppDispatch;
+    }
+>(
+    'auth/login',
+    async (user: LoginFormValues, thunkAPI) => { // thunkAPI is now implicitly typed
         try {
             return await authService.login(user)
         } catch (error: any) {
@@ -52,7 +69,7 @@ export const login = createAsyncThunk<User, LoginFormValues, { rejectValue: stri
 
 // Logout user
 export const logout = createAsyncThunk<void, void>(
-    'auth/logout', 
+    'auth/logout',
     async () => {
         authService.logout()
     }

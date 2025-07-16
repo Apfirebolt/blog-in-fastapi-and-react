@@ -60,11 +60,24 @@ const updatePost = async (
   return response.data;
 };
 
+// Get single post
+const getSinglePost = async (token: string, postId: string): Promise<BlogPost> => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.get<BlogPost>(API_URL + postId, config);
+  return response.data;
+};
+
 const blogService = {
   createBlog,
   getPosts,
   deletePost,
-  updatePost
+  updatePost,
+  getSinglePost
 };
 
 export default blogService;

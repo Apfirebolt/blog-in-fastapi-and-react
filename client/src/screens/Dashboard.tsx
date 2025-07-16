@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux"; 
+import { useNavigate } from "react-router-dom";
 import { createPost, getPosts, deletePost, updatePost } from "../features/blog/BlogSlice";
 import { Layout, Typography, Button, Modal, Card, Row, Col } from "antd";
 import PostForm from "../components/Post";
@@ -17,6 +18,7 @@ const Dashboard: React.FC = () => {
   const posts = useSelector((state: any) => state.blog.posts);
   const user = useSelector((state: any) => state.auth.user);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const showModal = () => {
     setSelectedPost(null);
@@ -70,7 +72,9 @@ const Dashboard: React.FC = () => {
     setSelectedPost(null);
   };
 
-  console.log("Posts in Dashboard:", posts);
+  const navigateToBlogDetail = (postId: number) => {
+    navigate(`/blogs/${postId}`);
+  };
 
   useEffect(() => {
     dispatch(getPosts());
@@ -118,6 +122,14 @@ const Dashboard: React.FC = () => {
                         By: {post.owner ? post.owner.username : "Unknown"}
                       </Paragraph>
                     )}
+                    <Button
+                      size="small"
+                      type="default"
+                      onClick={() => navigateToBlogDetail(post.id)}
+                      style={{ marginTop: "8px", width: "100%" }}
+                    >
+                      Read More
+                    </Button>
                     {post.owner && post.owner.username === user?.username && (
                       <div
                         style={{

@@ -2,10 +2,8 @@ import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
 interface User {
-    // Define user properties based on your user object structure
     id: string
     email: string
-    // Add other user properties as needed
 }
 
 interface AuthState {
