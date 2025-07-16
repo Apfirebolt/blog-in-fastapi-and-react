@@ -66,10 +66,12 @@ async def get_comments_by_blog_id(blog_id: int, database: Session = Depends(db.g
 
 
 @router.delete('/{blog_id}/comments/{comment_id}/', status_code=status.HTTP_204_NO_CONTENT, response_class=Response)
-async def delete_comment_by_id(blog_id: int, comment_id: int,
+async def delete_comment_by_id(comment_id: int,
                                 database: Session = Depends(db.get_db),
                                 current_user: User = Depends(get_current_user)):
-    return await services.delete_comment_by_id(comment_id, blog_id, current_user.id, database)
+    await services.delete_comment_by_id(comment_id, current_user.id, database)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    
 
 
 @router.put('/{blog_id}/comments/{comment_id}/', status_code=status.HTTP_200_OK, response_model=schema.CommentBase)

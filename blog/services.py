@@ -70,7 +70,7 @@ async def create_new_comment(request, blog_id, current_user, database) -> models
 
 
 async def get_comments_by_blog_id(blog_id, database) -> List[models.Comments]:
-    comments = database.query(models.Comment).filter_by(blog_id=blog_id).all()
+    comments = database.query(models.Comments).filter_by(blog_id=blog_id).all()
     if not comments:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -80,7 +80,7 @@ async def get_comments_by_blog_id(blog_id, database) -> List[models.Comments]:
 
 
 async def delete_comment_by_id(comment_id, user_id, database):
-    comment = database.query(models.Comment).filter_by(id=comment_id, author_id=user_id).first()
+    comment = database.query(models.Comments).filter_by(id=comment_id, owner_id=user_id).first()
     if not comment:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -88,11 +88,10 @@ async def delete_comment_by_id(comment_id, user_id, database):
         )
     database.delete(comment)
     database.commit()
-    return {"detail": "Comment deleted successfully."}
 
 
 async def update_comment_by_id(request, comment_id, user_id, database):
-    comment = database.query(models.Comment).filter_by(id=comment_id, author_id=user_id).first()
+    comment = database.query(models.Comments).filter_by(id=comment_id, owner_id=user_id).first()
     if not comment:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

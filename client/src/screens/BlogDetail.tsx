@@ -25,21 +25,13 @@ import {
 
 const { Title, Text, Paragraph } = Typography;
 
-interface Blog {
-  id: number;
-  title: string;
-  content: string;
-  author: string;
-  created_at: string;
-  updated_at: string;
-}
-
 const BlogDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { post, loading, error } = useSelector((state: any) => state.blog);
+  const { user } = useSelector((state: any) => state.auth);
   const [commentContent, setCommentContent] = useState("");
   const [selectedComment, setSelectedComment] = useState(null);
 
@@ -67,7 +59,8 @@ const BlogDetail: React.FC = () => {
 
   const handleCommentDelete = async (postId: string, commentId: string) => {
     await dispatch(deleteComment({ postId, commentId }));
-    await dispatch(getPosts());
+    await dispatch(getSinglePost(postId));
+    setSelectedComment(null);
   };
 
   useEffect(() => {
@@ -189,6 +182,48 @@ const BlogDetail: React.FC = () => {
                       </Text>
                     </Space>
                     <Text>{comment.content}</Text>
+                    {user?.username === comment.owner.username && (
+                      <Space>
+                        <Button
+                          size="small"
+                          onClick={() => setSelectedComment(comment)}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          size="small"
+                          danger
+                          onClick={() =>
+                            handleCommentDelete(post.id, comment.id)
+                          }
+                        >
+                          Delete
+                        </Button>
+                      </Space>
+                    )}
+                    {selectedComment?.id === comment.id && (
+                      <Space direction="vertical" style={{ width: "100%" }}>
+                        <Input.TextArea
+                          rows={4}
+                          placeholder="Edit your comment..."
+                          value={commentContent}
+                          onChange={(e) => setCommentContent(e.target.value)}
+                          style={{ marginBottom: "12px" }}
+                        />
+                        <Button
+                          type="primary"
+                          onClick={() =>
+                            handleCommentUpdate(
+                              post.id,
+                              comment.id,
+                              { content: commentContent }
+                            )
+                          }
+                        >
+                          Update Comment
+                        </Button>
+                      </Space>
+                    )}
                   </Space>
                 </Card>
               ))}
