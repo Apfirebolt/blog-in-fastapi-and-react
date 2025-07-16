@@ -3,7 +3,6 @@ from fastapi import APIRouter, Depends, status, Response, Request
 from sqlalchemy.orm import Session
 from auth.jwt import get_current_user
 from auth.models import User
-from blog.models import BlogPost
 
 import db
 
@@ -58,7 +57,7 @@ async def update_blog_by_id(request: schema.BlogUpdate, blog_id: int, database: 
 async def create_comment(blog_id: int, request: schema.CommentBase, 
                         database: Session = Depends(db.get_db), 
                         current_user: User = Depends(get_current_user)):
-    return await services.create_new_comment(request, blog_id, current_user.id, database)
+    return await services.create_new_comment(request, blog_id, current_user, database)
 
 
 @router.get('/{blog_id}/comments/', status_code=status.HTTP_200_OK, response_model=List[schema.CommentBase])

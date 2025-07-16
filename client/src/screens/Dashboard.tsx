@@ -63,9 +63,6 @@ const Dashboard: React.FC = () => {
   };
 
   const handleDeletePost = async (postId: number) => {
-    // Logic to handle post deletion
-    console.log("Deleting post with ID:", postId);
-    // You would typically dispatch a delete action here
     await dispatch(deletePost(postId));
     await dispatch(getPosts());
     setIsDeleteModalOpen(false);

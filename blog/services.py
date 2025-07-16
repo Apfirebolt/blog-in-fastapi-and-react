@@ -48,7 +48,7 @@ async def update_blog_by_id(request, blog_id, user_id, database):
     return blog
 
 
-async def create_new_comment(request, blog_id, database, current_user) -> models.Comment:
+async def create_new_comment(request, blog_id, current_user, database) -> models.Comments:
     # First check if the blog exists
     blog = database.query(models.Blog).filter_by(id=blog_id).first()
     if not blog:
@@ -57,10 +57,10 @@ async def create_new_comment(request, blog_id, database, current_user) -> models
             detail="Blog Not Found !"
         )
     
-    new_comment = models.Comment(
+    new_comment = models.Comments(
         content=request.content,
         blog_id=blog_id,
-        author_id=current_user.id,
+        owner_id=current_user.id,
         createdDate=datetime.now().strftime('%m/%d/%Y')
     )
     database.add(new_comment)
@@ -69,7 +69,7 @@ async def create_new_comment(request, blog_id, database, current_user) -> models
     return new_comment
 
 
-async def get_comments_by_blog_id(blog_id, database) -> List[models.Comment]:
+async def get_comments_by_blog_id(blog_id, database) -> List[models.Comments]:
     comments = database.query(models.Comment).filter_by(blog_id=blog_id).all()
     if not comments:
         raise HTTPException(

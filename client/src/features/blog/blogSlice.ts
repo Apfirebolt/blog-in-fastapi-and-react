@@ -4,12 +4,18 @@ import { logout } from '../auth/authSlice'; // Ensure this path is correct
 import { toast } from 'react-toastify';
 import type { RootState, AppDispatch } from '../../app/store'; // Adjust path as per your store location
 
+interface Comment {
+    id: string;
+    content: string;
+    createdAt: string; // Consider using Date type if you parse it
+}
 
 interface Post {
     id: string;
     title: string;
     content: string;
-    createdAt: string; // Consider using Date type if you parse it
+    createdAt: string;
+    comments?: Comment[];
 }
 
 interface BlogState {
@@ -170,6 +176,72 @@ export const updatePost = createAsyncThunk<
     }
 );
 
+// Post a comment on a blog post
+export const postComment = createAsyncThunk<
+    { postId: string; comment: any }, // Return type: post ID and the new comment
+    { postId: string; commentData: { content: string } }, // Input type: post ID and comment content
+    ThunkApiConfig
+>(
+    'blog/postComment',
+    async ({ postId, commentData }, thunkAPI) => {
+        try {
+            const token = thunkAPI.getState().auth.user?.token;
+            if (!token) {
+                return thunkAPI.rejectWithValue('No authentication token found.');
+            }
+            const newComment = await blogService.postComment(postId, commentData, token);
+            toast.success('Comment posted successfully!');
+            return { postId, comment: newComment };
+        } catch (error) {
+            return handleApiError(error, thunkAPI);
+        }
+    }
+);
+
+// Delete a comment from a blog post
+export const deleteComment = createAsyncThunk<
+    { postId: string; commentId: string }, // Return type: post ID and comment ID for removal
+    { postId: string; commentId: string }, // Input type: post ID and comment ID
+    ThunkApiConfig
+>(
+    'blog/deleteComment',
+    async ({ postId, commentId }, thunkAPI) => {
+        try {
+            const token = thunkAPI.getState().auth.user?.token;
+            if (!token) {
+                return thunkAPI.rejectWithValue('No authentication token found.');
+            }
+            await blogService.deleteComment(postId, commentId, token);
+            toast.success('Comment deleted successfully!');
+            return { postId, commentId };
+        } catch (error) {
+            return handleApiError(error, thunkAPI);
+        }
+    }
+);
+
+// Update a comment on a blog post
+export const updateComment = createAsyncThunk<
+    { postId: string; comment: any }, // Return type: post ID and the updated comment
+    { postId: string; commentId: string; commentData: { content: string } }, // Input type: post ID, comment ID and comment content
+    ThunkApiConfig
+>(
+    'blog/updateComment',
+    async ({ postId, commentId, commentData }, thunkAPI) => {
+        try {
+            const token = thunkAPI.getState().auth.user?.token;
+            if (!token) {
+                return thunkAPI.rejectWithValue('No authentication token found.');
+            }
+            const updatedComment = await blogService.updateComment(postId, commentId, commentData, token);
+            toast.success('Comment updated successfully!');
+            return { postId, comment: updatedComment };
+        } catch (error) {
+            return handleApiError(error, thunkAPI);
+        }
+    }
+);
+
 // --- Blog Slice Definition ---
 
 export const blogSlice = createSlice({
@@ -266,6 +338,68 @@ export const blogSlice = createSlice({
                 state.message = 'Post updated successfully!';
             })
             .addCase(updatePost.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.message = action.payload as string;
+            })
+            // --- postComment reducers ---
+            .addCase(postComment.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(postComment.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = true;
+                // Find the post and add the new comment to its comments array
+                const post = state.posts.find((p) => p.id === action.payload.postId);
+                if (post) {
+                    if (!post.comments) {
+                        post.comments = []; // Initialize comments if not present
+                    }
+                    post.comments.push(action.payload.comment);
+                }
+                state.message = 'Comment posted successfully!';
+            })
+            .addCase(postComment.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.message = action.payload as string;
+            })
+            // --- deleteComment reducers ---
+            .addCase(deleteComment.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(deleteComment.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = true;
+                // Find the post and remove the comment from its comments array
+                const post = state.posts.find((p) => p.id === action.payload.postId);
+                if (post && post.comments) {
+                    post.comments = post.comments.filter((comment) => comment.id !== action.payload.commentId);
+                }
+                state.message = 'Comment deleted successfully!';
+            })
+            .addCase(deleteComment.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.message = action.payload as string;
+            })
+            // --- updateComment reducers ---
+            .addCase(updateComment.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(updateComment.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = true;
+                // Find the post and update the specific comment in its comments array
+                const post = state.posts.find((p) => p.id === action.payload.postId);
+                if (post && post.comments) {
+                    post.comments = post.comments.map((comment) =>
+                        comment.id === action.payload.comment.id ? action.payload.comment : comment
+                    );
+                }
+                state.message = 'Comment updated successfully!';
+            })
+            .addCase(updateComment.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isError = true;
                 state.message = action.payload as string;
