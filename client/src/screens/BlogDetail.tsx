@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getSinglePost } from "../features/blog/BlogSlice";
+import { getSinglePost } from "../features/blog/blogSlice";
 import { useParams, useNavigate } from 'react-router-dom';
-import { Card, Button, Typography, Space, Divider, Spin, Alert } from 'antd';
+import { Card, Button, Typography, Space, Divider, Spin, Alert, Input } from 'antd';
 import { ArrowLeftOutlined, UserOutlined, CalendarOutlined } from '@ant-design/icons';
 
 const { Title, Text, Paragraph } = Typography;
@@ -54,7 +54,7 @@ const BlogDetail: React.FC = () => {
     }
 
     return (
-        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
+        <div style={{ margin: '0 auto', padding: '20px' }}>
             <Button 
                 type="default" 
                 icon={<ArrowLeftOutlined />} 
@@ -89,6 +89,40 @@ const BlogDetail: React.FC = () => {
                 <Paragraph style={{ fontSize: '16px', lineHeight: '1.6' }}>
                     {post.content}
                 </Paragraph>
+
+                <Divider />
+
+                <div style={{ marginTop: '32px' }}>
+                    <Title level={3}>Comments</Title>
+                    
+                    {/* Comment form */}
+                    <Card style={{ marginBottom: '24px', backgroundColor: '#fafafa' }}>
+                        <Space direction="vertical" style={{ width: '100%' }}>
+                            <Text strong>Add a comment:</Text>
+                            <Input.TextArea 
+                                rows={4} 
+                                placeholder="Write your comment here..."
+                                style={{ marginBottom: '12px' }}
+                            />
+                            <Button type="primary">Post Comment</Button>
+                        </Space>
+                    </Card>
+
+                    {/* Comments list */}
+                    <Space direction="vertical" style={{ width: '100%' }} size="middle">
+                        {/* Example comment - replace with actual comments from state */}
+                        <Card size="small">
+                            <Space direction="vertical" size="small" style={{ width: '100%' }}>
+                                <Space>
+                                    <UserOutlined />
+                                    <Text strong>Username</Text>
+                                    <Text type="secondary">2 hours ago</Text>
+                                </Space>
+                                <Text>This is a sample comment. Replace this with actual comment content.</Text>
+                            </Space>
+                        </Card>
+                    </Space>
+                </div>
             </Card>
         </div>
     );

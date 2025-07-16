@@ -28,3 +28,36 @@ class BlogList(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class CommentBase(BaseModel):
+    content: str
+
+    class Config:
+        from_attributes = True
+
+
+class CommentUpdate(BaseModel):
+    content: Optional[str]
+
+    class Config:
+        from_attributes = True
+
+
+class CommentPost(BaseModel):
+    content: str
+    blog_id: int
+
+    class Config:
+        from_attributes = True
+
+
+class CommentList(BaseModel):
+    id: int
+    content: str
+    createdDate: datetime
+    blog_id: int
+    owner: DisplayUser
+
+    class Config:
+        from_attributes = True
