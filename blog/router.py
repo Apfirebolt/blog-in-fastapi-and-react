@@ -33,7 +33,7 @@ async def blog_list(database: Session = Depends(db.get_db),
     return result
 
 
-@router.get('/{blog_id}/', status_code=status.HTTP_200_OK, response_model=schema.BlogBase)
+@router.get('/{blog_id}/', status_code=status.HTTP_200_OK, response_model=schema.BlogList)
 async def get_blog_by_id(blog_id: int, database: Session = Depends(db.get_db),
                                 current_user: User = Depends(get_current_user)):                            
     return await services.get_blog_by_id(blog_id, current_user.id, database)

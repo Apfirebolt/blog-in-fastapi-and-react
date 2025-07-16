@@ -19,7 +19,7 @@ async def get_blog_listing(database) -> List[models.Blog]:
 
 
 async def get_blog_by_id(blog_id, user_id, database):
-    blog = database.query(models.Blog).filter_by(id=blog_id, owner_id=user_id).first()
+    blog = database.query(models.Blog).filter_by(id=blog_id).first()
     if not blog:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

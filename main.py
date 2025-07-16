@@ -11,7 +11,7 @@ from auth import router as auth_router
 from blog import router as blog_router
 
 app = FastAPI(title="Fast API Blog",
-    docs_url="/fast-blog-docs",
+    docs_url="/docs",
     version="0.0.1")
 
 origins = ["http://localhost:3000",]

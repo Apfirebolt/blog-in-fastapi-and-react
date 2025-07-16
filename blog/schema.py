@@ -1,4 +1,5 @@
 from typing import Optional
+from datetime import datetime
 from pydantic import BaseModel, constr
 from auth.schema import DisplayUser
 
@@ -22,6 +23,7 @@ class BlogList(BaseModel):
     id: int
     title: str
     content: str
+    createdDate: datetime
     owner: DisplayUser
 
     class Config:

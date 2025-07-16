@@ -106,7 +106,7 @@ export const getPosts = createAsyncThunk<
 
 // Get a single post by ID (optional, but useful if you need to view/edit one)
 export const getSinglePost = createAsyncThunk<
-    Post, // Expected return type
+    Post,
     string, // Post ID as argument
     ThunkApiConfig
 >(
@@ -117,7 +117,7 @@ export const getSinglePost = createAsyncThunk<
             if (!token) {
                 return thunkAPI.rejectWithValue('No authentication token found.');
             }
-            return await blogService.getSinglePost(postId, token); // Assuming blogService has getSinglePost
+            return await blogService.getSinglePost(token, postId); // Assuming blogService has getSinglePost
         } catch (error) {
             return handleApiError(error, thunkAPI);
         }
