@@ -72,12 +72,62 @@ const getSinglePost = async (token: string, postId: string): Promise<BlogPost> =
   return response.data;
 };
 
+// Post a comment on a blog post
+const postComment = async (
+  postId: string,
+  commentData: { content: string },
+  token: string
+): Promise<any> => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.post(`${API_URL}${postId}/comments`, commentData, config);
+  return response.data;
+};
+
+const deleteComment = async (
+  postId: string,
+  commentId: string,
+  token: string
+): Promise<any> => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.delete(`${API_URL}${postId}/comments/${commentId}`, config);
+  return response.data;
+};
+
+const updateComment = async (
+  postId: string,
+  commentId: string,
+  commentData: { content: string },
+  token: string
+): Promise<any> => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.put(`${API_URL}${postId}/comments/${commentId}`, commentData, config);
+  return response.data;
+};
+
 const blogService = {
   createBlog,
   getPosts,
   deletePost,
   updatePost,
-  getSinglePost
+  getSinglePost,
+  postComment,
+  deleteComment,
+  updateComment,
 };
 
 export default blogService;

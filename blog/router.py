@@ -50,3 +50,33 @@ async def delete_blog_by_id(blog_id: int,
 async def update_blog_by_id(request: schema.BlogUpdate, blog_id: int, database: Session = Depends(db.get_db),
                                 current_user: User = Depends(get_current_user)):                            
     return await services.update_blog_by_id(request, blog_id, current_user.id, database)
+
+
+@router.post('/{blog_id}/comments/', status_code=status.HTTP_201_CREATED,
+                response_model=schema.CommentBase)
+async def create_comment(blog_id: int, request: schema.CommentBase, 
+                        database: Session = Depends(db.get_db), 
+                        current_user: User = Depends(get_current_user)):
+    return await services.create_new_comment(request, blog_id, current_user, database)
+
+
+@router.get('/{blog_id}/comments/', status_code=status.HTTP_200_OK, response_model=List[schema.CommentBase])
+async def get_comments_by_blog_id(blog_id: int, database: Session = Depends(db.get_db)):
+    return await services.get_comments_by_blog_id(blog_id, database)
+
+
+@router.delete('/{blog_id}/comments/{comment_id}/', status_code=status.HTTP_204_NO_CONTENT, response_class=Response)
+async def delete_comment_by_id(comment_id: int,
+                                database: Session = Depends(db.get_db),
+                                current_user: User = Depends(get_current_user)):
+    await services.delete_comment_by_id(comment_id, current_user.id, database)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    
+
+
+@router.put('/{blog_id}/comments/{comment_id}/', status_code=status.HTTP_200_OK, response_model=schema.CommentBase)
+async def update_comment_by_id(blog_id: int, comment_id: int, request: schema.CommentBase,
+                                database: Session = Depends(db.get_db),
+                                current_user: User = Depends(get_current_user)):
+    return await services.update_comment_by_id(request, comment_id, current_user.id, database)
+
