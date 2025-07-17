@@ -33,6 +33,7 @@ const BlogDetail: React.FC = () => {
   const { post, loading, error } = useSelector((state: any) => state.blog);
   const { user } = useSelector((state: any) => state.auth);
   const [commentContent, setCommentContent] = useState("");
+  const [updateCommentContent, setUpdateCommentContent] = useState("");
   const [selectedComment, setSelectedComment] = useState(null);
 
   const handleCommentSubmit = async () => {
@@ -53,8 +54,9 @@ const BlogDetail: React.FC = () => {
     commentData: any
   ) => {
     await dispatch(updateComment({ postId, commentId, commentData }));
-    await dispatch(getPosts());
+    await dispatch(getSinglePost(postId));
     setSelectedComment(null);
+    setUpdateCommentContent("");
   };
 
   const handleCommentDelete = async (postId: string, commentId: string) => {
@@ -65,7 +67,6 @@ const BlogDetail: React.FC = () => {
 
   useEffect(() => {
     if (id) {
-      console.log("Fetching post with ID:", id);
       dispatch(getSinglePost(id));
     }
   }, [id, dispatch]);
@@ -206,8 +207,8 @@ const BlogDetail: React.FC = () => {
                         <Input.TextArea
                           rows={4}
                           placeholder="Edit your comment..."
-                          value={commentContent}
-                          onChange={(e) => setCommentContent(e.target.value)}
+                          value={updateCommentContent}
+                          onChange={(e) => setUpdateCommentContent(e.target.value)}
                           style={{ marginBottom: "12px" }}
                         />
                         <Button
@@ -216,7 +217,7 @@ const BlogDetail: React.FC = () => {
                             handleCommentUpdate(
                               post.id,
                               comment.id,
-                              { content: commentContent }
+                              { content: updateCommentContent }
                             )
                           }
                         >

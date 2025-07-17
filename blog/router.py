@@ -78,5 +78,5 @@ async def delete_comment_by_id(comment_id: int,
 async def update_comment_by_id(blog_id: int, comment_id: int, request: schema.CommentBase,
                                 database: Session = Depends(db.get_db),
                                 current_user: User = Depends(get_current_user)):
-    return await services.update_comment_by_id(request, comment_id, blog_id, current_user.id, database)
+    return await services.update_comment_by_id(request, comment_id, current_user.id, database)
 
