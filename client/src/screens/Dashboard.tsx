@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux"; 
+import { AgGridReact } from "ag-grid-react";
+import { useDispatch, useSelector } from "react-redux";
+import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
-import { createPost, getPosts, deletePost, updatePost } from "../features/blog/BlogSlice";
+import {
+  createPost,
+  getPosts,
+  deletePost,
+  updatePost,
+} from "../features/blog/BlogSlice";
 import { Layout, Typography, Button, Modal, Card, Row, Col } from "antd";
 import PostForm from "../components/Post";
 import Confirm from "../components/Confirm";
@@ -15,10 +22,67 @@ const Dashboard: React.FC = () => {
   const [confirmMessage, setConfirmMessage] = useState("");
   const [confirmTitle, setConfirmTitle] = useState("Confirm Deletion");
   const [selectedPost, setSelectedPost] = useState(null);
+  const [gridColumns, setGridColumns] = useState([
+    { headerName: "Title", field: "title", sortable: true, filter: true },
+    { headerName: "Content", field: "content", sortable: true, filter: true },
+    {
+      headerName: "Created At",
+      field: "createdDate",
+      sortable: true,
+      filter: "agDateColumnFilter",
+      cellRenderer: (params: any) => {
+        return params.value
+          ? dayjs(params.value).format("YYYY-MM-DD HH:mm:ss")
+          : "";
+      },
+      filterParams: {
+        comparator: (filterLocalDateAtMidnight: Date, cellValue: string) => {
+          const cellDate = new Date(cellValue);
+          if (filterLocalDateAtMidnight.getTime() === cellDate.getTime()) {
+            return 0;
+          }
+          if (cellDate < filterLocalDateAtMidnight) {
+            return -1;
+          }
+          if (cellDate > filterLocalDateAtMidnight) {
+            return 1;
+          }
+        },
+      },
+    },
+    {
+      headerName: "Author",
+      field: "owner.username",
+      sortable: true,
+      filter: true,
+    },
+    {
+      headerName: "Actions",
+      field: "actions",
+      cellRendererFramework: (params: any) => (
+        <div>
+          <Button size="small" onClick={() => handleEditPost(params.data)}>
+            Edit
+          </Button>
+          <Button
+            size="small"
+            danger
+            onClick={() => openDeletePostModal(params.data)}
+          >
+            Delete
+          </Button>
+        </div>
+      ),
+    },
+  ]);
   const posts = useSelector((state: any) => state.blog.posts);
   const user = useSelector((state: any) => state.auth.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const handleDateFormat = (date: string) => {
+    return dayjs(date).format("YYYY-MM-DD HH:mm:ss");
+  };
 
   const showModal = () => {
     setSelectedPost(null);
@@ -99,6 +163,14 @@ const Dashboard: React.FC = () => {
           </Button>
         </div>
 
+        <AgGridReact
+          rowData={posts}
+          columnDefs={gridColumns}
+          pagination={true}
+          paginationPageSize={10}
+          domLayout="autoHeight"
+        />
+
         {posts && posts.length > 0 && (
           <div style={{ padding: "24px" }}>
             <Title
@@ -154,6 +226,13 @@ const Dashboard: React.FC = () => {
                 </Col>
               ))}
             </Row>
+          </div>
+        )}
+
+        {posts && posts.length === 0 && (
+          <div style={{ padding: "24px", textAlign: "center" }}>
+            <Title level={3}>No posts available</Title>
+            <Paragraph>Start by creating your first post!</Paragraph>
           </div>
         )}
       </Content>

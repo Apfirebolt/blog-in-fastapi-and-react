@@ -11,11 +11,15 @@
     "test": "jest"
   },
   "dependencies": {
+    "@ag-grid-community/all-modules": "^27.3.0",
     "@reduxjs/toolkit": "^2.8.2",
     "@uiw/react-md-editor": "^4.0.7",
+    "ag-grid-community": "^34.0.2",
+    "ag-grid-react": "^34.0.2",
     "antd": "^5.25.1",
     "axios": "^1.9.0",
     "bulma": "^1.0.4",
+    "dayjs": "^1.11.13",
     "jotai": "^2.12.4",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
