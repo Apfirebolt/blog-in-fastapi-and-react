@@ -18,12 +18,12 @@ class User(Base):
     posts = relationship("Blog", back_populates="owner")
     comments = relationship("Comments", back_populates="owner")
 
-    def __init__(self, username, email, password, firstName, lastName, *args, **kwargs):
+    def __init__(self, username: str, email: str, password: str, firstName: str, lastName: str, *args, **kwargs) -> None:
         self.username = username
         self.email = email
         self.firstName = firstName
         self.lastName = lastName
         self.password = hashing.get_password_hash(password)
 
-    def check_password(self, password):
+    def check_password(self, password: str) -> bool:
         return hashing.verify_password(self.password, password)

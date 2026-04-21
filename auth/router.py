@@ -31,7 +31,7 @@ async def create_user_registration(request: schema.User,
     new_user = await services.new_user_register(request, database)
     access_token = create_access_token(data={"sub": new_user.email, "id": new_user.id})
     user = schema.UserLogin(
-        id=user.id, email=user.email, username=user.username, token=access_token)
+        email=new_user.email, username=new_user.username, token=access_token)
     return user
 
 
@@ -42,7 +42,7 @@ async def get_all_users(database: Session = Depends(db.get_db)):
 
 @router.post('/login')
 def login(request: schema.Login,
-          database: Session = Depends(db.get_db)):    
+          database: Session = Depends(db.get_db)) -> schema.UserLogin:    
     user = database.query(User).filter(User.email == request.username).first()
     if not user:
         raise HTTPException(
