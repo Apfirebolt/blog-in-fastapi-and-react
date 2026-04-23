@@ -29,6 +29,7 @@ pycodestyle==2.11.1
 pycparser==2.21
 pydantic==2.5.3
 pydantic_core==2.14.6
+pytest==8.4.2
 python-dotenv==1.1.1
 python-jose==3.3.0
 python-multipart==0.0.6
