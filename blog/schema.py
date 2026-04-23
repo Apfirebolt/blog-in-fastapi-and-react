@@ -36,6 +36,16 @@ class CommentList(BaseModel):
         from_attributes = True
 
 
+class CommentListDisplay(BaseModel):
+    id: int
+    content: str
+    createdDate: datetime
+    blog_id: int
+
+    class Config:
+        from_attributes = True
+
+
 class BlogBase(BaseModel):
     title: str
     content: str
@@ -59,6 +69,16 @@ class BlogList(BaseModel):
     createdDate: datetime
     owner: DisplayUser
     comments: Optional[list[CommentList]] = []
+
+    class Config:
+        from_attributes = True
+
+
+class BlogSqlDisplay(BaseModel):
+    id: int
+    title: str
+    createdDate: datetime
+    owner_id: int
 
     class Config:
         from_attributes = True
