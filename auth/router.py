@@ -31,7 +31,7 @@ async def create_user_registration(request: schema.User,
     new_user = await services.new_user_register(request, database)
     access_token = create_access_token(data={"sub": new_user.email, "id": new_user.id})
     user = schema.UserLogin(
-        email=new_user.email, username=new_user.username, token=access_token)
+        id=new_user.id, email=new_user.email, username=new_user.username, token=access_token)
     return user
 
 
